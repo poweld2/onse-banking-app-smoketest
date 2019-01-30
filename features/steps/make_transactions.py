@@ -53,25 +53,28 @@ def withdraw(context, amount):
     assert response.status_code == 202, f'{response.status_code} {response.text}'
 
 
-@then('then balance of the account should be {amount:d}')
-def assert_balance_increased(context, amount):
-    balance = None
-    retries = 5
+@when('"{name}" changes his name')
+def create_customer(context, name):
+    (first_name, surname) = name.split(' ', 2)
+    create_customer_request = dict(firstName=first_name, surname=surname)
 
-    while balance != amount and retries > 0:
-        response = requests.get(f'{URL}/balance/{context.account_number}')
+    response = requests.post(f'{URL}/customers/', json=create_customer_request)
 
-        if response.status_code == 404:
-            time.sleep(1)
-            retries = retries - 1
-            continue
+    assert response.status_code == 201, response.status_code
+    body = response.json()
+    context.customer_id = body['customerId']
 
-        assert response.status_code == 200, \
-            f'Expected 200 when checking balance, got {response.status_code}'
 
-        body = response.json()
-        balance = body['clearedBalance']
-        retries = retries - 1
-        time.sleep(1)
+@then('then "{name}" will be created in a new account')
+def create_account(context, name):
+    create_account_request = dict(customerId=context.customer_id)
 
-    assert balance == amount, f'{balance} != {amount}'
+    response = requests.post(f'{URL}/accounts/',
+                             json=create_account_request)
+
+    assert response.status_code == 201, f'{response.status_code} {response.text}'
+    body = response.json()
+    context.account_number = body['accountNumber']
+
+
+
