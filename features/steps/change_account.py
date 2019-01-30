@@ -6,17 +6,6 @@ from behave import given, when, then
 
 URL = os.getenv('URL', 'http://localhost')
 
-@given('there is a customer "{name}"')
-def create_customer(context, name):
-    (first_name, surname) = name.split(' ', 2)
-    create_customer_request = dict(firstName=first_name, surname=surname)
-
-    response = requests.post(f'{URL}/customers/', json=create_customer_request)
-
-    assert response.status_code == 201, response.status_code
-    body = response.json()
-    context.customer_id = body['customerId']
-
 @when('"{name}" changes his name')
 def create_customer(context, name):
     (first_name, surname) = name.split(' ', 2)
