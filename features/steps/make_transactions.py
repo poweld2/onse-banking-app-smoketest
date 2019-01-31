@@ -21,7 +21,7 @@ def create_customer(context, name):
 
 @given('"{name}" has a new account')
 def create_account(context, name):
-    create_account_request = dict(customerId=context.customer_id)
+    create_account_request = dict(customerId=context.customer_id, accountStatus='active')
 
     response = requests.post(f'{URL}/accounts/',
                              json=create_account_request)
@@ -51,6 +51,11 @@ def withdraw(context, amount):
     response = requests.post(f'{URL}/cashier/create', json=deposit_request)
 
     assert response.status_code == 202, f'{response.status_code} {response.text}'
+
+
+@then(u'then balance of the account should be 30')
+def step_impl(context):
+    pass
 
 
 

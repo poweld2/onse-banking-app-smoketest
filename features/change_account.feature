@@ -1,4 +1,3 @@
-
 Feature: Change name
   As an account holder I want to change my name
   In order to keep my account up to date

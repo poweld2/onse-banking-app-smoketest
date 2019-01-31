@@ -20,7 +20,7 @@ def create_customer(context, name):
 
 @then('then "{name}" will be created in a new account')
 def create_account(context, name):
-    create_account_request = dict(customerId=context.customer_id)
+    create_account_request = dict(customerId=context.customer_id, accountStatus='active')
 
     response = requests.post(f'{URL}/accounts/',
                              json=create_account_request)
